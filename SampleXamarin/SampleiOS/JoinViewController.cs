@@ -6,17 +6,38 @@ using CoreFoundation;
 using System.Collections.Generic;
 using Foundation;
 using UniformTypeIdentifiers;
+using HelpLightning.SDK.iOS;
 
 namespace HelpLightning.SDK.Sample.iOS
 {
     public partial class JoinViewController : UIViewController, ICallClientDelegate
     {
-        private static readonly string DefaultUserName = "your-user-name";
-        private static readonly string HLApiKey = "[INSERT API KEY]";
+        private static readonly string DefaultUserName = "Small User13";
+        private static readonly string HLApiKey = "8d327cb3a60355178b0ea275995f5bdd";
 
         public JoinViewController(IntPtr handle) : base(handle)
         {
             CallClientFactory.Instance.CallClient.Delegate = this;
+            if (CallClientFactory.Instance.CallClient is IEnvironmentSetting setting) {
+                var dataCenter = new DataCenterConfig
+                    (
+                        DataCenter.US1,
+                        "dev-us",
+                        "US",
+                        true,
+                        HLApiKey,
+                        "containers-asia.helplightning.net",
+                        49233,
+                        true,
+                        "45595982",
+                        "https://containers-asia.helplightning.net:49229",
+                        "https://containers-asia.helplightning.net:49228"
+                    );
+                var config = new SDKConfig(new Dictionary<DataCenter, DataCenterConfig>() {
+                    {DataCenter.US1, dataCenter }
+                });
+                setting.UpdateSDKConfig(config);
+            }
         }
 
         public override void ViewDidLoad()
